@@ -1,10 +1,19 @@
 pipeline {
-    agent any // means any agent
+    agent any
+    environment {
+    DOCKER_ID = "dstdockerhub"
+    DOCKER_IMAGE = "datascientestapi"
+    DOCKER_TAG = "v.${BUILD_ID}.0"
+    }
     stages {
-        stage('Greeting') {
-            steps {
-                echo 'Hello Datascientest'
-            }
+        stage('Building') {
+
+        }
+        stage('Testing') {
+
+        }
+          stage('Deploying') {
+
         }
     }
 }
