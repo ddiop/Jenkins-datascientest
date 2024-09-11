@@ -1,11 +1,18 @@
 pipeline {
-    agent {
-     docker {
-       image 'gradle:6.9-alpine'
-       label 'datascientest-gradle'
-       args  '-v /tmp:/tmp'
-     }
-   }
+    agent any
+    server {
+    listen 80;
+    server_name 8fa0-2a01-e0a-254-7680-a4f7-9ea8-a3d-754.ngrok-free.app;
+
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+     
     environment {
         DOCKER_ID = "dstdockerhub"
         DOCKER_IMAGE = "datascientestapi"
