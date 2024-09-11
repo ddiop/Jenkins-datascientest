@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     // Ajouter le chemin d'accès de Python et pip à PATH
-                    env.PATH = $PATH
+                    env.PATH = "${env.PATH}:/usr/local/bin"
                 }
             }
         }
