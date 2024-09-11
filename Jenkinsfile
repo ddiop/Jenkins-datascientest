@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'datascientest1' }
     environment {
         DOCKER_ID = "dstdockerhub"
         DOCKER_IMAGE = "datascientestapi"
