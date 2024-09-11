@@ -8,8 +8,17 @@ pipeline {
     }
 
     stages {
+    stage('Setup') {
+            steps {
+                script {
+                    // Ajouter le chemin d'accès de Python et pip à PATH
+                    env.PATH = $PATH
+                }
+            }
+        }
         stage('Building') {
             steps {
+                  echo "Current PATH: $PATH"
                   sh 'pip install -r requirements.txt'
             }
         }
