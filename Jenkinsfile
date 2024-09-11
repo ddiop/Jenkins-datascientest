@@ -8,14 +8,7 @@ pipeline {
     }
 
     stages {
-    stage('Setup') {
-            steps {
-                script {
-                    // Ajouter le chemin d'accès de Python et pip à PATH
-                    env.PATH = "${env.PATH}:/usr/local/bin"
-                }
-            }
-        }
+
         stage('Building') {
             steps {
                   echo "Current PATH: $PATH"
