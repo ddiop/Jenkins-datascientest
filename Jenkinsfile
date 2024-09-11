@@ -1,8 +1,8 @@
 pipeline {
     agent any
     server {
-    listen 80;
-    server_name 8fa0-2a01-e0a-254-7680-a4f7-9ea8-a3d-754.ngrok-free.app;
+    listen 4040;
+    server_name https://8fa0-2a01-e0a-254-7680-a4f7-9ea8-a3d-754.ngrok-free.app;
 
     location / {
         proxy_pass http://localhost:8080;
