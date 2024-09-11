@@ -1,11 +1,11 @@
 pipeline {
-   agent {
-  docker {
-    image 'gradle:6.9-alpine'
-    label 'datascientest-gradle'
-    args  '-v /tmp:/tmp'
-  }
-}
+    agent {
+     docker {
+       image 'gradle:6.9-alpine'
+       label 'datascientest-gradle'
+       args  '-v /tmp:/tmp'
+     }
+   }
     environment {
         DOCKER_ID = "dstdockerhub"
         DOCKER_IMAGE = "datascientestapi"
