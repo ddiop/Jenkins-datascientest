@@ -4,14 +4,14 @@ pipeline {
     DOCKER_ID = "dstdockerhub"
     DOCKER_IMAGE = "datascientestapi"
     DOCKER_TAG = "v.${BUILD_ID}.0"
-    PATH = "${env.PATH}:/usr/local/bin"
+
     }
 
     stages {
 
         stage('Building') {
             steps {
-                  echo "Current PATH: $PATH"
+                 echo "Current PATH: $PATH"
                   sh 'pip install -r requirements.txt'
             }
         }
