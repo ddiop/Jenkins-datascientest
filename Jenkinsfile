@@ -10,12 +10,8 @@ pipeline {
     stages {
         stage('Building') {
             steps {
-                sh '''
                
-               
-                # Installer les dépendances
-                echo "pip install -r requirements.txt"
-                '''
+             
             }
         }
         stage('Testing') {
