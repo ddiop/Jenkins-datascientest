@@ -10,9 +10,16 @@ pipeline {
 
     stages {
         stage('Setup Python') {
+            agent {
+                docker {
+                    image 'jenkins/jenkins:lts'
+                    args '-u root'  // Exécute les commandes en tant que root
+                }
+            }
             steps {
                 sh '''
-                apt-get update && apt-get install -y python3 python3-pip
+                apt-get update
+                apt-get install -y python3 python3-pip
                 '''
             }
         }
@@ -21,7 +28,6 @@ pipeline {
                 sh '''
                 python3 -m pip install --upgrade pip
                 pip install -r requirements.txt
-                echo "pip install -r requirements.txt"
                 '''
             }
         }
@@ -29,7 +35,6 @@ pipeline {
             steps {
                 sh '''
                 python3 -m unittest discover
-                echo "Tests terminés."
                 '''
             }
         }
@@ -39,7 +44,6 @@ pipeline {
                 docker rm -f jenkins || true
                 docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
                 docker run -d -p 8000:8000 --name jenkins $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
-                echo "Déploiement terminé."
                 '''
             }
         }
