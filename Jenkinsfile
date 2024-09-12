@@ -1,17 +1,6 @@
 pipeline {
     agent any
-    server {
-    listen 4040;
-    server_name https://8fa0-2a01-e0a-254-7680-a4f7-9ea8-a3d-754.ngrok-free.app;
-
-    location / {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
+   
      
     environment {
         DOCKER_ID = "dstdockerhub"
