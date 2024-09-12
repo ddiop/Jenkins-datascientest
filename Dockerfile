@@ -1,20 +1,10 @@
-# Utilise l'image officielle Python 3.8 basée sur Debian Buster
-FROM python:3.8-slim-buster
+FROM jenkins/jenkins:lts
 
-# Définit le répertoire de travail à l'intérieur du conteneur
-WORKDIR /usr/src/app
+# Passer à l'utilisateur root pour installer les paquets
+USER root
 
-# Copie le fichier des dépendances dans le conteneur
-COPY requirements.txt ./
+# Installer Python3 et pip
+RUN apt-get update && apt-get install -y python3 python3-pip
 
-# Installe les dépendances
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copie le contenu de l'application dans le conteneur
-COPY . .
-
-# Expose le port utilisé par l'application Flask
-EXPOSE 5000
-
-# Définit la commande par défaut pour exécuter l'application Flask
-CMD ["flask", "run", "--host=0.0.0.0"]
+# Revenir à l'utilisateur Jenkins
+USER jenkins
