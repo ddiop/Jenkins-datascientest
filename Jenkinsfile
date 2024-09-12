@@ -8,6 +8,15 @@ pipeline {
     }
 
     stages {
+     stage('Setup Python') {
+            steps {
+                sh '''
+                # Installer python3 et pip dans le conteneur Jenkins
+                apt-get update
+                apt-get install -y python3 python3-pip
+                '''
+            }
+        }
         stage('Building') {
             steps {
                 sh '''
