@@ -1,10 +1,14 @@
-FROM jenkins/jenkins:lts
+# Dockerfile to build a flask app
 
-# Passer à l'utilisateur root pour installer les paquets
-USER root
+FROM python:3.8-slim-buster
 
-# Installer Python3 et pip
-RUN apt-get update && apt-get install -y python3 python3-pip
+WORKDIR /usr/
 
-# Revenir à l'utilisateur Jenkins
-USER jenkins
+COPY requirements.txt requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["python", "-m" , "flask", "run"]
+
