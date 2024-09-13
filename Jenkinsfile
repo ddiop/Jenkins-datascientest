@@ -6,6 +6,11 @@ pipeline {
         DOCKER_TAG = "v.${BUILD_ID}.0"
     }
     stages {
+        stage('Install Python venv') {
+            steps {
+                sh 'sudo apt update && sudo apt install -y python3-venv'
+            }
+        }
         stage('Check Docker') {
             steps {
                 sh 'docker --version'
