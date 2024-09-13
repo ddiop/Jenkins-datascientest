@@ -2,69 +2,44 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_ID = "dstdockerhub"
-        DOCKER_IMAGE = "datascientestapi"
-        DOCKER_TAG = "v.${BUILD_ID}.0"
-        IMAGE_NAME = "jenkins-python"
+        SHOOL = "datascientest"
+        NAME = "Anthony"
     }
 
     stages {
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh '''
-                    # Construire l'image Docker dynamiquement
-                    docker build -t $DOCKER_ID/$IMAGE_NAME:latest .
+        stage("Env Variables") {
+            environment {
+                NAME = "lewis" // overrides pipeline level NAME env variable
+                BUILD_ID = "2" // overrides the default BUILD_ID
+            }
 
-                    # Taguer l'image avec la version spécifique
-                    docker tag $DOCKER_ID/$IMAGE_NAME:latest $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
-                    '''
+            steps {
+                echo "SHOOL = ${env.SHOOL}" // prints "SHOOL = bar"
+                echo "NAME = ${env.NAME}" // prints "NAME = lewis"
+                echo "BUILD_ID =  ${env.BUILD_ID}" // prints "BUILD_ID = 2"
+
+                script {
+                    env.SOMETHING = "1" // creates env.SOMETHING variable
                 }
             }
         }
-        stage('Building') {
+
+        stage("Override Variables") {
             steps {
                 script {
-                    sh '''
-                    # Exécuter des commandes dans le conteneur Docker
-                    docker run --rm -v $PWD:/app -w /app $DOCKER_ID/$IMAGE_NAME:latest sh -c "
-                        # Vérifier la version de Python et pip
-                        python3 --version
-                        pip3 --version
-
-                        # Mettre à jour pip et installer les dépendances
-                        pip3 install --upgrade pip
-                        pip3 install -r requirements.txt
-                    "
-                    '''
+                    env.SHOOL = "I LOVE DATASCIENTEST!" // it can't override env.SHOOL declared at the pipeline (or stage) level
+                    env.SOMETHING = "2" // it can override env variable created imperatively
                 }
-            }
-        }
-        stage('Testing') {
-            steps {
-                script {
-                    sh '''
-                    # Exécuter les tests dans le conteneur Docker
-                    docker run --rm -v $PWD:/app -w /app $DOCKER_ID/$IMAGE_NAME:latest sh -c "
-                        python3 -m unittest discover
-                    "
-                    '''
+
+                echo "SHOOL = ${env.SHOOL}" // prints "SHOOL = bar"
+                echo "SOMETHING = ${env.SOMETHING}" // prints "SOMETHING = 2"
+
+                withEnv(["SHOOL=DEV UNIVERSITY"]) { // it can override any env variable
+                    echo "SHOOL = ${env.SHOOL}" // prints "SHOOL = DEV UNIVERSITY"
                 }
-            }
-        }
-        stage('Deploying') {
-            steps {
-                script {
-                    sh '''
-                    # Construire l'image Docker pour le déploiement
-                    docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
 
-                    # Supprimer l'ancien conteneur s'il existe
-                    docker rm -f jenkins || true
-
-                    # Exécuter le nouveau conteneur
-                    docker run -d -p 8000:8000 --name jenkins $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
-                    '''
+                withEnv(["BUILD_ID=1"]) {
+                    echo "BUILD_ID = ${env.BUILD_ID}" // prints "BUILD_ID = 1"
                 }
             }
         }
