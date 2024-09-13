@@ -1,12 +1,14 @@
-# Dockerfile to build a flask app
+# Utiliser l'image Jenkins LTS comme base
+FROM jenkins/jenkins:lts
 
-FROM python:3.8-slim-buster
+# Passer à l'utilisateur root pour installer des packages
+USER root
 
-WORKDIR /usr/ 
+# Mettre à jour les paquets et installer Python et pip
+RUN apt-get update && apt-get install -y python3 python3-pip
 
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+# Réinitialiser à l'utilisateur Jenkins pour éviter les problèmes de permissions
+USER jenkins
 
-COPY . .
-
-CMD ["python", "-m" , "flask", "run"]
+# Assurez-vous que le répertoire .local/bin est dans le PATH pour pip installé avec --user
+ENV PATH="/usr/local/bin:${PATH}"
