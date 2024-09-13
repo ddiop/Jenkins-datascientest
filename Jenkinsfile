@@ -11,25 +11,19 @@ pipeline {
                 sh 'sudo apt update && sudo apt install -y python3-venv'
             }
         }
-        stage('Check Docker') {
-            steps {
-                sh 'docker --version'
-            }
-        }
         stage('Building') {
             steps {
                 script {
                     sh '''
                     python3 -m venv venv
-                    source venv/bin/activate
-                    pip install -r requirements.txt
+                    bash -c "source venv/bin/activate && pip install -r requirements.txt"
                     '''
                 }
             }
         }
         stage('Testing') {
             steps {
-                sh 'python -m unittest'
+                sh 'bash -c "source venv/bin/activate && python -m unittest"'
             }
         }
         stage('Deploying') {
