@@ -15,7 +15,7 @@ pipeline {
                     export PATH=${PYTHON_PATH}:${PATH}
 
                     # Vérifier les versions de Python et pip
-                    python3 --version
+
                     pip3 --version
 
                     # Mettre à jour pip et installer les dépendances
