@@ -1,19 +1,24 @@
 pipeline {
     agent any
-
     environment {
-        nom = 'datascientest' // Définition de la variable d'environnement globale
+    DOCKER_ID = "dstdockerhub"
+    DOCKER_IMAGE = "datascientestapi"
+    DOCKER_TAG = "v.${BUILD_ID}.0"
     }
-
     stages {
-        stage('Example') {
-            environment {
-                AN_ACCESS_KEY = credentials('DOCKER_HUB_PASS') // Variable secrète
-            }
+        stage('Building') {
             steps {
-                // Utilisation des variables dans les étapes
-                sh 'echo $nom'  // Appel de la variable globale
-                sh 'echo secret $AN_ACCESS_KEY'  // Appel de la variable secrète
+                  sh 'pip install -r requirements.txt'
+            }
+        }
+        stage('Testing') {
+            steps {
+                  sh 'python -m unittest'
+            }
+        }
+          stage('Deploying') {
+            steps{
+
             }
         }
     }
