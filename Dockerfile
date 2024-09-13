@@ -1,19 +1,12 @@
-FROM jenkins/jenkins:lts
+# Dockerfile to build a flask app
 
-USER root
+FROM python:3.8-slim-buster
 
-# Installer Docker
-RUN apt-get update && \
-    apt-get install -y apt-transport-https ca-certificates curl software-properties-common && \
-    curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
-    apt-get update && \
-    apt-get install -y docker-ce
+WORKDIR /usr/ 
 
-# Installer Python et pip
-RUN apt-get update && apt-get install -y python3 python3-pip
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
 
-USER jenkins
+COPY . .
 
-# Assurez-vous que le répertoire .local/bin est dans le PATH pour pip installé avec --user
-ENV PATH="/usr/local/bin:${PATH}"
+CMD ["python", "-m" , "flask", "run"]
