@@ -1,5 +1,11 @@
 pipeline {
-    agent any
+   agent {
+  docker {
+    image 'gradle:6.9-alpine'
+    label 'datascientest-gradle'
+    args  '-v /tmp:/tmp'
+  }
+}
     environment {
         DOCKER_ID = "ddiopegen"
         DOCKER_IMAGE = "datascientestapi"
