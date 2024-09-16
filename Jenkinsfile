@@ -1,48 +1,54 @@
 pipeline {
     agent any
-
     environment {
-        SHOOL = "datascientest"
-        NAME = "Anthony"
+        DOCKER_ID = "ddiopegen"
+        DOCKER_IMAGE = "datascientestapi"
+        DOCKER_TAG = "v.${BUILD_ID}.0"
     }
-
     stages {
-        stage("Env Variables") {
-            environment {
-                NAME = "lewis" // overrides pipeline level NAME env variable
-                BUILD_ID = "2" // overrides the default BUILD_ID
-            }
-
+        stage('Install Python venv') {
             steps {
-                echo "SHOOL = ${env.SHOOL}" // prints "SHOOL = bar"
-                echo "NAME = ${env.NAME}" // prints "NAME = lewis"
-                echo "BUILD_ID =  ${env.BUILD_ID}" // prints "BUILD_ID = 2"
-                echo"BUILD_USER = ${env.BUILD_USER}"
-
+                sh 'sudo apt update && sudo apt install -y python3-venv'
+            }
+        }
+        stage('Building') {
+            steps {
                 script {
-                    env.SOMETHING = "1" // creates env.SOMETHING variable
+                    sh '''
+                    python3 -m venv venv
+                    bash -c "source venv/bin/activate && pip install -r requirements.txt"
+                    '''
                 }
             }
         }
-
-        stage("Override Variables") {
+        stage('Testing') {
+            steps {
+                sh 'bash -c "source venv/bin/activate && python -m unittest"'
+            }
+        }
+        stage('Deploying') {
             steps {
                 script {
-                    env.SHOOL = "I LOVE DATASCIENTEST!" // it can't override env.SHOOL declared at the pipeline (or stage) level
-                    env.SOMETHING = "2" // it can override env variable created imperatively
-                }
-
-                echo "SHOOL = ${env.SHOOL}" // prints "SHOOL = bar"
-                echo "SOMETHING = ${env.SOMETHING}" // prints "SOMETHING = 2"
-
-                withEnv(["SHOOL=DEV UNIVERSITY"]) { // it can override any env variable
-                    echo "SHOOL = ${env.SHOOL}" // prints "SHOOL = DEV UNIVERSITY"
-                }
-
-                withEnv(["BUILD_ID=1"]) {
-                    echo "BUILD_ID = ${env.BUILD_ID}" // prints "BUILD_ID = 1"
+                    sh '''
+                    docker rm -f jenkins || true
+                    docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
+                    docker run -d -p 8000:8000 --name jenkins $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
+                    '''
                 }
             }
+        }
+        stage('Cleanup') {
+            steps {
+                sh 'docker system prune -af'
+            }
+        }
+        stage('User Acceptance') {
+          steps{
+            input {
+              message "Proceed to push to main"
+              ok "Yes"
+            }    
+          }
         }
     }
 }
