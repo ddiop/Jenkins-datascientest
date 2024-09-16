@@ -11,7 +11,7 @@ pipeline {
             }
             steps {
                 sh 'print $DOCKER_HUB_PASS' // variable call
-                 sh 'print $GITHUB_TOKEN' // variable call
+                
             }
         }
     }
