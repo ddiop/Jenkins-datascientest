@@ -17,6 +17,7 @@ pipeline {
                 echo "SHOOL = ${env.SHOOL}" // prints "SHOOL = bar"
                 echo "NAME = ${env.NAME}" // prints "NAME = lewis"
                 echo "BUILD_ID =  ${env.BUILD_ID}" // prints "BUILD_ID = 2"
+                echo"BUILD_USER = $BUILD_USER"
 
                 script {
                     env.SOMETHING = "1" // creates env.SOMETHING variable
