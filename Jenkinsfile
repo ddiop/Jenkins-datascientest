@@ -10,7 +10,12 @@ pipeline {
                 GITHUB_TOKEN = credentials('github-access-token')
             }
             steps {
-                sh 'print $DOCKER_HUB_PASS' // variable call
+               script {
+                    // Utiliser le secret dans une commande shell
+                    sh '''
+                    echo "The access key is: $AN_ACCESS_KEY"
+                    '''
+                }
                 
             }
         }
