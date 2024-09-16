@@ -1,51 +1,17 @@
 pipeline {
-   agent {
-  docker {
-    image 'gradle:6.9-alpine'
-    label 'datascientest-gradle'
-    args  '-v /tmp:/tmp'
-  }
-}
+    agent any
     environment {
-        DOCKER_ID = "ddiopegen"
-        DOCKER_IMAGE = "datascientestapi"
-        DOCKER_TAG = "v.${BUILD_ID}.0"
+         nom = 'datascientest'
     }
     stages {
-        stage('Install Python venv') {
-            steps {
-                sh 'sudo apt update && sudo apt install -y python3-venv'
+        stage('Example') {
+            environment {
+                DOCKER_HUB_PASS = credentials('DOCKER_HUB_PASS')  // variable secret
+               github-access-token = credentials('github-access-token')
             }
-        }
-        stage('Building') {
             steps {
-                script {
-                    sh '''
-                    python3 -m venv venv
-                    bash -c "source venv/bin/activate && pip install -r requirements.txt"
-                    '''
-                }
-            }
-        }
-        stage('Testing') {
-            steps {
-                sh 'bash -c "source venv/bin/activate && python -m unittest"'
-            }
-        }
-        stage('Deploying') {
-            steps {
-                script {
-                    sh '''
-                    docker rm -f jenkins || true
-                    docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
-                    docker run -d -p 8000:8000 --name jenkins $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
-                    '''
-                }
-            }
-        }
-        stage('Cleanup') {
-            steps {
-                sh 'docker system prune -af'
+                sh 'print $DOCKER_HUB_PASS' // variable call
+                 sh 'print $github-access-token' // variable call
             }
         }
     }
