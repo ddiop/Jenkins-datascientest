@@ -16,14 +16,19 @@ pipeline {
                 script {
                     sh '''
                     python3 -m venv venv
-                    bash -c "source venv/bin/activate && pip install -r requirements.txt"
+                    . venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
                     '''
                 }
             }
         }
         stage('Testing') {
             steps {
-                sh 'bash -c "source venv/bin/activate && python -m unittest"'
+                sh '''
+                . venv/bin/activate
+                python -m unittest discover
+                '''
             }
         }
         stage('Deploying') {
@@ -43,12 +48,9 @@ pipeline {
             }
         }
         stage('User Acceptance') {
-          steps{
-            input {
-              message "Proceed to push to main"
-              ok "Yes"
+            steps {
+                input message: "Proceed to push to main?", ok: "Yes"
             }
-          }
         }
     }
 }
