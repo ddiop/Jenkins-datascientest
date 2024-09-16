@@ -42,5 +42,13 @@ pipeline {
                 sh 'docker system prune -af'
             }
         }
+        stage('User Acceptance') {
+          steps{
+            input {
+              message "Proceed to push to main"
+              ok "Yes"
+            }
+          }
+        }
     }
 }
