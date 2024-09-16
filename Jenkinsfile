@@ -13,7 +13,7 @@ pipeline {
                script {
                     // Utiliser le secret dans une commande shell
                     sh '''
-                    echo "The access key is: $AN_ACCESS_KEY"
+                    echo "The access key is: $GITHUB_TOKEN"
                     '''
                 }
                 
